@@ -103,6 +103,9 @@ public class MainActivity extends Activity implements OnClickListener{
 		case R.id.btn_7:
 		case R.id.btn_8:
 		case R.id.btn_9:
+			if (expression.length() == 12) {
+				break;
+			}
 			//如果是上述数字，直接在式子末尾添加
 			expression = expression + ((Button) v).getText();
 			//记录上一次输入的字符
@@ -113,6 +116,9 @@ public class MainActivity extends Activity implements OnClickListener{
 		case R.id.btn_minus:
 		case R.id.btn_multiple:
 		case R.id.btn_divide:
+			if (expression.length() == 12) {
+				break;
+			}
 			//输入加减乘除，如果上一个输入的是加减乘除符号，这次点击无效
 			if (last_input.equals("+") || last_input.equals("-") || last_input.equals("×") || last_input.equals("÷")) {
 				
@@ -140,6 +146,9 @@ public class MainActivity extends Activity implements OnClickListener{
 			et_input.setText(expression);
 			break;
 		case R.id.btn_point:
+			if (expression.length() == 12) {
+				break;
+			}
 			//输入点的内容,如果之前输入小数点，则不允许连续输入两个小数点
 			if (last_input.equals(".")) {
 				
@@ -183,12 +192,9 @@ public class MainActivity extends Activity implements OnClickListener{
 		String frontString = "";
 		String backString = "";
 		if (multilocation != -1 || dividelocation != -1){
-			if (multilocation > dividelocation){
+			if (multilocation < dividelocation){
 				//做乘法
 				position1 = getFirst(multilocation);
-				if (position1 == multilocation) {
-					position1 = -1;
-				}
 				position2 = getSecond(multilocation);
 				if(position2 == -1 || position2 == multilocation){
 					position2 = expression.length();
@@ -209,16 +215,13 @@ public class MainActivity extends Activity implements OnClickListener{
 					backString = "";
 				}
 				else{
-					backString = expression.substring(position2 - 1,expression.length());
+					backString = expression.substring(position2,expression.length());
 				}
 				expression = frontString + temp + backString;
 			}
 			else{
 				//做除法
 				position1 = getFirst(dividelocation);
-				if (position1 == dividelocation) {
-					position1 = -1;
-				}
 				position2 = getSecond(dividelocation);
 				if(position2 == -1 || position2 == dividelocation){
 					position2 = expression.length();
@@ -239,7 +242,7 @@ public class MainActivity extends Activity implements OnClickListener{
 					backString = "";
 				}
 				else{
-					backString = expression.substring(position2 - 1,expression.length());
+					backString = expression.substring(position2,expression.length());
 				}
 				expression = frontString + temp + backString;
 			}
@@ -250,9 +253,9 @@ public class MainActivity extends Activity implements OnClickListener{
 		return 0;
 	}
 	
-	//计算加减法
+	//do add and minus
 	public int doAddAndMinus(){
-		//计算加减
+		
 		int position1 = 0;
 		int position2 = 0;
 		double temp = 0;
@@ -261,14 +264,15 @@ public class MainActivity extends Activity implements OnClickListener{
 		String frontString = "";
 		String backString = "";
 		if (addlocation != -1 || minuslocation != -1){
-			if (addlocation > minuslocation){
-				//做加法
+			//add an minus ,first come,first service
+			if (addlocation < minuslocation && addlocation != -1 && minuslocation != -1 || addlocation != -1 && minuslocation == -1){
+				//do add
 				position1 = getFirst(addlocation);
 				if (position1 == addlocation) {
 					position1 = -1;
 				}
-				position2 = getSecond(addlocation);
-				if(position2 == -1 || position2 == addlocation){
+				position2 = getSecond(addlocation + 1);
+				if(position2 == -1){
 					position2 = expression.length();
 				}
 				Log.i("Tag", "position1: " + position1);
@@ -293,24 +297,29 @@ public class MainActivity extends Activity implements OnClickListener{
 					backString = "";
 				}
 				else{
-					backString = expression.substring(position2 - 1,expression.length());
+					backString = expression.substring(position2,expression.length());
 				}
 				expression = frontString + temp + backString;
 				Log.i("Tag", "expression: " + expression);
 			}
 			else{
-				//做减法
+				//do minus
 				position1 = getFirst(minuslocation);
-				if (position1 == addlocation) {
+				if (position1 == minuslocation) {
 					position1 = -1;
 				}
-				position2 = getSecond(minuslocation);
-				if(position2 == -1 || position2 == minuslocation){
+				position2 = getSecond(minuslocation + 1);
+				if(position2 == -1){
 					position2 = expression.length();
 				}
+				Log.i("Tag", "position1: " + position1);
+				Log.i("Tag", "position2: " + position2);
+				Log.i("Tag", "minuslocation: " + minuslocation);
 				//取得两个数字
 				String s1 = expression.substring(position1 + 1,minuslocation);
 				String s2 = expression.substring(minuslocation + 1,position2);
+				Log.i("Tag", "s1: " + s1);
+				Log.i("Tag", "s2: " + s2);
 				first = Double.parseDouble(s1);
 				second = Double.parseDouble(s2);
 				temp  = first - second;
@@ -324,8 +333,10 @@ public class MainActivity extends Activity implements OnClickListener{
 					backString = "";
 				}
 				else{
-					backString = expression.substring(position2 - 1,expression.length());
+					backString = expression.substring(position2,expression.length());
 				}
+
+				Log.i("Tag", "temp: " + temp);
 				expression = frontString + temp + backString;
 			}
 		}
@@ -339,7 +350,13 @@ public class MainActivity extends Activity implements OnClickListener{
 	public int getFirst(int position)
 	{
 		int position1 = expression.indexOf("+",0);
+		if (position1 > position) {
+			position1 = -1;
+		}
 		int position2 = expression.indexOf("-",0);
+		if (position2 > position) {
+			position2 = -1;
+		}
 		return position1 > position2? position1: position2;
 	}
 	
@@ -348,6 +365,27 @@ public class MainActivity extends Activity implements OnClickListener{
 	{
 		int position1 = expression.indexOf("+",position);
 		int position2 = expression.indexOf("-",position);
-		return position1 > position2? position1: position2;
+		int position3 = expression.indexOf("×",position);
+		int position4 = expression.indexOf("÷",position);
+		int small = getSmallNumber(position1, position2, position3, position4);
+		return small;
+	}
+	
+	//四个数比较大小，除去-1
+	public int getSmallNumber(int a,int b,int c,int d){
+		int array[] = {a,b,c,d};
+		int min = -1;
+		for(int i = 0;i < 4;i ++){
+			if(array[i] != -1){
+				if(min == -1){
+					min = array[i];
+					continue;
+				}
+				if(array[i] < min){
+					min = array[i];
+				}
+			}
+		}
+		return min;
 	}
 }
