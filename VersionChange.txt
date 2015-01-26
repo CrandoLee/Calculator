@@ -4,3 +4,11 @@
 2015/1/25 Version 0.1.1
 -Now you can do add and minus together such as 2-1+3-4
 -Fix the problem that you can type for more than 12 number before.
+
+2015/1/26 Version 0.2.0
+-Add multiply and divide function,Now you can do add,minus,multiply and divide together
+-add notification of divide 0 error
+-add '0' button's function
+-when you get integer result,it will not display the point(5.0 -> 5)
+-resize the button,it adapt to resolution of 1280x720
+-fix the negative number error in calculating

@@ -30,15 +30,16 @@ public class MainActivity extends Activity implements OnClickListener{
 	Button btn_point;
 	Button btn_equal;
 	EditText et_input = null;
-	boolean clear_flag = false;//清空
+	boolean clear_flag = false;			//清空
 	
-	double x1 = 0,x2 = 0;//定义两个变量
+	double x1 = 0,x2 = 0;				//定义两个变量
 	
-	double first = 0; //存储第一个要进行运算的数字
-	double second = 0;//存储第二个要进行运算的数字
-	String expression = "";//存储输入的式子
-	String expression_backup = "";//存储输入式子的备份
-	String last_input = "";//存储上一个输入的字符
+	double first = 0; 					//存储第一个要进行运算的数字
+	double second = 0;					//存储第二个要进行运算的数字
+	String expression = "";				//存储输入的式子
+	String expression_backup = "";		//存储输入式子的备份
+	String last_input = "";				//存储上一个输入的字符
+	boolean error1 = false;  			//divided by zero error 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -112,6 +113,16 @@ public class MainActivity extends Activity implements OnClickListener{
 			last_input = (String) ((Button) v).getText();
 			et_input.setText(expression);
 			break;
+		case R.id.btn_0:
+			if (expression.length() == 12) {
+				break;
+			}
+			//如果是上述数字，直接在式子末尾添加
+			expression = expression + ((Button) v).getText();
+			//记录上一次输入的字符
+			last_input = (String) ((Button) v).getText();
+			et_input.setText(expression);
+			break;
 		case R.id.btn_add:
 		case R.id.btn_minus:
 		case R.id.btn_multiple:
@@ -131,15 +142,22 @@ public class MainActivity extends Activity implements OnClickListener{
 			break;
 		case R.id.btn_del:
 			//退格键，如果式子长度不为零，删除一个字符,否则不执行删除操作
+			if (error1 == true) {
+				et_input.setText(expression_backup);
+				expression = expression_backup;
+				error1 = false;
+				break;
+			}
 			if(expression.length() > 0){
 				expression = expression.substring(0,expression.length() - 1);
 				et_input.setText(expression);
 			}
-
+			
 			break;
 		case R.id.btn_clear:
 			//删除整个式子，并且把所有标志归为初始状态
 			expression = "";
+			expression_backup = "";
 			last_input = "";
 			first = 0;
 			second = 0;
@@ -169,16 +187,21 @@ public class MainActivity extends Activity implements OnClickListener{
 
 	
 	public void getResult(){
-		//计算式子结果2+2x3
+		//计算式子结果
 		expression_backup = expression;
 		//一直做乘除
 		while(doMultiplyAndDivide() != -1);
 		//一直做加减
 		while(doAddAndMinus() != -1);
 		
-		et_input.setText(expression);
-		
-		
+		if (error1 == false) {
+			double doubleResult = Double.parseDouble(expression);
+			double intResult = Double.parseDouble(expression.substring(0, expression.indexOf('.')));
+			if (doubleResult - intResult == 0) {
+				expression = expression.substring(0, expression.indexOf('.'));
+			}
+			et_input.setText(expression);
+		}
 	}
 	
 	//计算乘除法
@@ -192,24 +215,43 @@ public class MainActivity extends Activity implements OnClickListener{
 		String frontString = "";
 		String backString = "";
 		if (multilocation != -1 || dividelocation != -1){
-			if (multilocation < dividelocation){
+			if (multilocation < dividelocation && multilocation != -1 && dividelocation != -1 || multilocation != -1 && dividelocation == -1){
 				//做乘法
 				position1 = getFirst(multilocation);
-				position2 = getSecond(multilocation);
-				if(position2 == -1 || position2 == multilocation){
+				if (position1 == multilocation) {
+					position1 = -1;
+				}
+				position2 = getSecond(multilocation + 1);
+				if(position2 == -1 ){
 					position2 = expression.length();
 				}
+				Log.i("Tag", "position1: " + position1);
+				Log.i("Tag", "position2: " + position2);
 				//取得两个数字
 				String s1 = expression.substring(position1 + 1,multilocation);
 				String s2 = expression.substring(multilocation + 1,position2);
 				first = Double.parseDouble(s1);
 				second = Double.parseDouble(s2);
 				temp  = first * second;
+				Log.i("Tag", "s1: " + s1);
+				Log.i("Tag", "s2: " + s2);
+				Log.i("Tag", "temp: " + temp);
 				if(position1 == -1){
 					frontString = "";
 				}
 				else{
-					frontString = expression.substring(0,position1);
+					//deal with negative 
+					if(temp < 0){
+						if(expression.substring(position1, position1).equals("-")){
+							frontString = expression.substring(0,position1) + "+";
+						}
+						else{
+							frontString = expression.substring(0,position1) + "-";
+						}
+					}
+					else{
+						frontString = expression.substring(0,position1 + 1);
+					}
 				}
 				if (position2 == expression.length()) {
 					backString = "";
@@ -218,25 +260,53 @@ public class MainActivity extends Activity implements OnClickListener{
 					backString = expression.substring(position2,expression.length());
 				}
 				expression = frontString + temp + backString;
+				Log.i("Tag", "expression: " + expression);
 			}
 			else{
 				//做除法
 				position1 = getFirst(dividelocation);
-				position2 = getSecond(dividelocation);
-				if(position2 == -1 || position2 == dividelocation){
+				if (position1 == dividelocation) {
+					position1 = -1;
+				}
+				position2 = getSecond(dividelocation + 1);
+				if(position2 == -1){
 					position2 = expression.length();
 				}
+				Log.i("Tag", "position1: " + position1);
+				Log.i("Tag", "position2: " + position2);
+				Log.i("Tag", "dividelocation: " + dividelocation);
 				//取得两个数字
 				String s1 = expression.substring(position1 + 1,dividelocation);
 				String s2 = expression.substring(dividelocation + 1,position2);
+				Log.i("Tag", "s1: " + s1);
+				Log.i("Tag", "s2: " + s2);
 				first = Double.parseDouble(s1);
 				second = Double.parseDouble(s2);
+				
+				if (second - 0 == 0) {
+					expression = "";
+					Log.i("Tag", "zero");
+					et_input.setText("ERROR ZERO");
+					error1 = true;
+					return -1;
+				}
 				temp  = first / second;
 				if(position1 == -1){
 					frontString = "";
 				}
 				else{
-					frontString = expression.substring(0,position1);
+					//deal with negative 
+					if(temp < 0){
+						if(expression.substring(position1, position1).equals("-")){
+							frontString = expression.substring(0,position1) + "+";
+						}
+						else{
+							frontString = expression.substring(0,position1) + "-";
+						}
+					}
+					else{
+						frontString = expression.substring(0,position1 + 1);
+					}
 				}
 				if (position2 == expression.length()) {
 					backString = "";
@@ -244,7 +314,9 @@ public class MainActivity extends Activity implements OnClickListener{
 				else{
 					backString = expression.substring(position2,expression.length());
 				}
+
 				expression = frontString + temp + backString;
+				Log.i("Tag", "expression: " + expression);
 			}
 		}
 		else{
@@ -291,7 +363,18 @@ public class MainActivity extends Activity implements OnClickListener{
 					frontString = "";
 				}
 				else{
-					frontString = expression.substring(0,position1);
+					//deal with negative 
+					if(temp < 0){
+						if(expression.substring(position1, position1).equals("-")){
+							frontString = expression.substring(0,position1) + "+";
+						}
+						else{
+							frontString = expression.substring(0,position1) + "-";
+						}
+					}
+					else{
+						frontString = expression.substring(0,position1 + 1);
+					}
 				}
 				if (position2 == expression.length()) {
 					backString = "";
@@ -305,6 +388,9 @@ public class MainActivity extends Activity implements OnClickListener{
 			else{
 				//do minus
 				position1 = getFirst(minuslocation);
+				if(position1 == 0){
+					return -1;
+				}
 				if (position1 == minuslocation) {
 					position1 = -1;
 				}
@@ -327,7 +413,18 @@ public class MainActivity extends Activity implements OnClickListener{
 					frontString = "";
 				}
 				else{
-					frontString = expression.substring(0,position1);
+					//deal with negative 
+					if(temp < 0){
+						if(expression.substring(position1, position1).equals("-")){
+							frontString = expression.substring(0,position1) + "+";
+						}
+						else{
+							frontString = expression.substring(0,position1) + "-";
+						}
+					}
+					else{
+						frontString = expression.substring(0,position1 + 1);
+					}
 				}
 				if (position2 == expression.length()) {
 					backString = "";
@@ -338,6 +435,7 @@ public class MainActivity extends Activity implements OnClickListener{
 
 				Log.i("Tag", "temp: " + temp);
 				expression = frontString + temp + backString;
+				Log.i("Tag", "expression: " + expression);
 			}
 		}
 		else{
