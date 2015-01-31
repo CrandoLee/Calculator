@@ -12,3 +12,6 @@
 -when you get integer result,it will not display the point(5.0 -> 5)
 -resize the button,it adapt to resolution of 1280x720
 -fix the negative number error in calculating
+
+2015/1/31 Version 0.2.1
+-set screenOrientation vertical
