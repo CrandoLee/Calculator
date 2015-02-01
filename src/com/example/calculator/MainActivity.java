@@ -39,7 +39,8 @@ public class MainActivity extends Activity implements OnClickListener{
 	String expression = "";				//存储输入的式子
 	String expression_backup = "";		//存储输入式子的备份
 	String last_input = "";				//存储上一个输入的字符
-	boolean error1 = false;  			//divided by zero error 
+	boolean error1 = false;  			//除零错误
+	boolean pointflag = false;  		//记录小数点的按下情况
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -107,16 +108,27 @@ public class MainActivity extends Activity implements OnClickListener{
 			if (expression.length() == 12) {
 				break;
 			}
-			//如果是上述数字，直接在式子末尾添加
-			expression = expression + ((Button) v).getText();
-			//记录上一次输入的字符
-			last_input = (String) ((Button) v).getText();
+			
+			//如果算式第一个字符为0，则自动变为输入的数字
+			if (expression.length() == 1 && expression.substring(0,1).equals("0")) {
+				expression = ((Button) v).getText() + "";
+			}
+			else {
+				expression = expression + ((Button) v).getText();
+			}
+			
 			et_input.setText(expression);
 			break;
 		case R.id.btn_0:
 			if (expression.length() == 12) {
 				break;
 			}
+			
+			//禁止在开始的时候输入0003这种类型的数字
+			if (expression.length() == 1 && expression.substring(0,1).equals("0")) {
+				break;
+			}
+			
 			//如果是上述数字，直接在式子末尾添加
 			expression = expression + ((Button) v).getText();
 			//记录上一次输入的字符
@@ -139,6 +151,7 @@ public class MainActivity extends Activity implements OnClickListener{
 				last_input = (String) ((Button) v).getText();
 				et_input.setText(expression);
 			}
+			pointflag = false;
 			break;
 		case R.id.btn_del:
 			//退格键，如果式子长度不为零，删除一个字符,否则不执行删除操作
@@ -149,6 +162,10 @@ public class MainActivity extends Activity implements OnClickListener{
 				break;
 			}
 			if(expression.length() > 0){
+				//判断是否删除了小数点,是则取消小数点标记
+				if(expression.substring(expression.length() - 2,expression.length() - 1).equals(".")){
+					pointflag = false;
+				}
 				expression = expression.substring(0,expression.length() - 1);
 				et_input.setText(expression);
 			}
@@ -162,19 +179,24 @@ public class MainActivity extends Activity implements OnClickListener{
 			first = 0;
 			second = 0;
 			et_input.setText(expression);
+			pointflag = false;
+			error1 = false;
 			break;
 		case R.id.btn_point:
 			if (expression.length() == 12) {
 				break;
 			}
-			//输入点的内容,如果之前输入小数点，则不允许连续输入两个小数点
-			if (last_input.equals(".")) {
-				
-			}
-			else {
-				expression = expression + ((Button) v).getText();
-				last_input = (String) ((Button) v).getText();
+			//输入小数点，如果一个数里面含有小数点，则不允许再输入小数点
+			if(pointflag == false) {
+				if(expression.length() < 1){
+					expression = "0.";
+				}
+				else{
+					expression = expression + ((Button) v).getText();
+				}
 				et_input.setText(expression);
+				//表明已经输入小数点
+				pointflag = true;
 			}
 			break;	
 		case R.id.btn_equal:
@@ -189,6 +211,15 @@ public class MainActivity extends Activity implements OnClickListener{
 	public void getResult(){
 		//计算式子结果
 		expression_backup = expression;
+		
+		//检查表达式里是否有运算符，如果没有则不需要进行运算
+		int position1 = expression.indexOf("+");
+		int position2 = expression.indexOf("-");
+		int position3 = expression.indexOf("×");
+		int position4 = expression.indexOf("÷");
+		if(position1 < 0 && position2 < 0 && position3 < 0 && position4 < 0){
+			return;
+		}
 		//一直做乘除
 		while(doMultiplyAndDivide() != -1);
 		//一直做加减
@@ -201,6 +232,12 @@ public class MainActivity extends Activity implements OnClickListener{
 				expression = expression.substring(0, expression.indexOf('.'));
 			}
 			et_input.setText(expression);
+			if(expression.indexOf('.') < 0){
+				pointflag = false;
+			}
+			else{
+				pointflag = true;
+			}
 		}
 	}
 	
@@ -240,7 +277,7 @@ public class MainActivity extends Activity implements OnClickListener{
 					frontString = "";
 				}
 				else{
-					//deal with negative 
+					//处理负数问题
 					if(temp < 0){
 						if(expression.substring(position1, position1).equals("-")){
 							frontString = expression.substring(0,position1) + "+";
@@ -295,7 +332,7 @@ public class MainActivity extends Activity implements OnClickListener{
 					frontString = "";
 				}
 				else{
-					//deal with negative 
+					//处理负数的问题 
 					if(temp < 0){
 						if(expression.substring(position1, position1).equals("-")){
 							frontString = expression.substring(0,position1) + "+";
@@ -325,7 +362,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		return 0;
 	}
 	
-	//do add and minus
+	//做加法和减法
 	public int doAddAndMinus(){
 		
 		int position1 = 0;
@@ -336,7 +373,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		String frontString = "";
 		String backString = "";
 		if (addlocation != -1 || minuslocation != -1){
-			//add an minus ,first come,first service
+			//按顺序做加减法
 			if (addlocation < minuslocation && addlocation != -1 && minuslocation != -1 || addlocation != -1 && minuslocation == -1){
 				//do add
 				position1 = getFirst(addlocation);
@@ -363,7 +400,7 @@ public class MainActivity extends Activity implements OnClickListener{
 					frontString = "";
 				}
 				else{
-					//deal with negative 
+					//处理负数问题
 					if(temp < 0){
 						if(expression.substring(position1, position1).equals("-")){
 							frontString = expression.substring(0,position1) + "+";
@@ -386,7 +423,7 @@ public class MainActivity extends Activity implements OnClickListener{
 				Log.i("Tag", "expression: " + expression);
 			}
 			else{
-				//do minus
+				//做减法
 				position1 = getFirst(minuslocation);
 				if(position1 == 0){
 					return -1;
