@@ -116,7 +116,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			else {
 				expression = expression + ((Button) v).getText();
 			}
-			
+			last_input = (String) ((Button) v).getText();
 			et_input.setText(expression);
 			break;
 		case R.id.btn_0:
@@ -161,7 +161,7 @@ public class MainActivity extends Activity implements OnClickListener{
 				error1 = false;
 				break;
 			}
-			if(expression.length() > 0){
+			if(expression.length() > 1){
 				//判断是否删除了小数点,是则取消小数点标记
 				if(expression.substring(expression.length() - 2,expression.length() - 1).equals(".")){
 					pointflag = false;
@@ -169,11 +169,15 @@ public class MainActivity extends Activity implements OnClickListener{
 				expression = expression.substring(0,expression.length() - 1);
 				et_input.setText(expression);
 			}
-			
+			else{
+				expression = "0";
+				et_input.setText(expression);
+			}
+			last_input = (String) ((Button) v).getText();
 			break;
 		case R.id.btn_clear:
 			//删除整个式子，并且把所有标志归为初始状态
-			expression = "";
+			expression = "0";
 			expression_backup = "";
 			last_input = "";
 			first = 0;
@@ -181,6 +185,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			et_input.setText(expression);
 			pointflag = false;
 			error1 = false;
+			last_input = (String) ((Button) v).getText();
 			break;
 		case R.id.btn_point:
 			if (expression.length() == 12) {
@@ -188,19 +193,16 @@ public class MainActivity extends Activity implements OnClickListener{
 			}
 			//输入小数点，如果一个数里面含有小数点，则不允许再输入小数点
 			if(pointflag == false) {
-				if(expression.length() < 1){
-					expression = "0.";
-				}
-				else{
-					expression = expression + ((Button) v).getText();
-				}
+				expression = expression + ((Button) v).getText();
 				et_input.setText(expression);
 				//表明已经输入小数点
 				pointflag = true;
 			}
+			last_input = (String) ((Button) v).getText();
 			break;	
 		case R.id.btn_equal:
 			getResult();
+			last_input = (String) ((Button) v).getText();
 			break;
 		default:
 			break;
@@ -267,8 +269,15 @@ public class MainActivity extends Activity implements OnClickListener{
 				//取得两个数字
 				String s1 = expression.substring(position1 + 1,multilocation);
 				String s2 = expression.substring(multilocation + 1,position2);
+				
 				first = Double.parseDouble(s1);
-				second = Double.parseDouble(s2);
+				if(s2 .equals("")){
+					second = 1;
+				}
+				else{
+					second = Double.parseDouble(s2);
+				}
+				
 				temp  = first * second;
 				Log.i("Tag", "s1: " + s1);
 				Log.i("Tag", "s2: " + s2);
@@ -317,9 +326,16 @@ public class MainActivity extends Activity implements OnClickListener{
 				String s2 = expression.substring(dividelocation + 1,position2);
 				Log.i("Tag", "s1: " + s1);
 				Log.i("Tag", "s2: " + s2);
-				first = Double.parseDouble(s1);
-				second = Double.parseDouble(s2);
 				
+				first = Double.parseDouble(s1);
+				if(s2 .equals("")){
+					second = 1;
+				}
+				else{
+					second = Double.parseDouble(s2);
+				}
+				
+
 				if (second - 0 == 0) {
 					expression = "";
 					Log.i("Tag", "zero");
@@ -390,8 +406,14 @@ public class MainActivity extends Activity implements OnClickListener{
 				String s1 = expression.substring(position1 + 1,addlocation);
 				
 				String s2 = expression.substring(addlocation + 1,position2);
+					
 				first = Double.parseDouble(s1);
-				second = Double.parseDouble(s2);
+				if(s2 .equals("")){
+					second = 0;
+				}
+				else{
+					second = Double.parseDouble(s2);
+				}
 				temp  = first + second;
 				Log.i("Tag", "s1: " + s1);
 				Log.i("Tag", "s2: " + s2);
@@ -444,7 +466,12 @@ public class MainActivity extends Activity implements OnClickListener{
 				Log.i("Tag", "s1: " + s1);
 				Log.i("Tag", "s2: " + s2);
 				first = Double.parseDouble(s1);
-				second = Double.parseDouble(s2);
+				if(s2 .equals("")){
+					second = 0;
+				}
+				else{
+					second = Double.parseDouble(s2);
+				}
 				temp  = first - second;
 				if(position1 == -1){
 					frontString = "";
