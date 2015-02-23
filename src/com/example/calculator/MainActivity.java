@@ -163,7 +163,9 @@ public class MainActivity extends Activity implements OnClickListener{
 			}
 			if(expression.length() > 1){
 				//判断是否删除了小数点,是则取消小数点标记
-				if(expression.substring(expression.length() - 2,expression.length() - 1).equals(".")){
+				Log.i("Tag","del:" + expression.charAt(expression.length() - 1));
+				String temp = "" + expression.charAt(expression.length() - 1);
+				if(temp.equals(".")){
 					pointflag = false;
 				}
 				expression = expression.substring(0,expression.length() - 1);
