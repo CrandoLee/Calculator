@@ -1,5 +1,9 @@
 package com.example.calculator;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import android.os.Bundle;
 import android.R.integer;
 import android.app.Activity;
@@ -105,7 +109,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		case R.id.btn_7:
 		case R.id.btn_8:
 		case R.id.btn_9:
-			if (expression.length() == 12) {
+			if (expression.length() > 10) {
 				break;
 			}
 			
@@ -120,7 +124,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			et_input.setText(expression);
 			break;
 		case R.id.btn_0:
-			if (expression.length() == 12) {
+			if (expression.length() > 10) {
 				break;
 			}
 			
@@ -139,7 +143,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		case R.id.btn_minus:
 		case R.id.btn_multiple:
 		case R.id.btn_divide:
-			if (expression.length() == 12) {
+			if (expression.length() > 10) {
 				break;
 			}
 			//输入加减乘除，如果上一个输入的是加减乘除符号，这次点击无效
@@ -190,7 +194,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			last_input = (String) ((Button) v).getText();
 			break;
 		case R.id.btn_point:
-			if (expression.length() == 12) {
+			if (expression.length() > 10) {
 				break;
 			}
 			//输入小数点，如果一个数里面含有小数点，则不允许再输入小数点
@@ -235,6 +239,8 @@ public class MainActivity extends Activity implements OnClickListener{
 			if (doubleResult - intResult == 0) {
 				expression = expression.substring(0, expression.indexOf('.'));
 			}
+			BigDecimal bg = new BigDecimal(expression);
+			expression = bg.toPlainString();
 			et_input.setText(expression);
 			if(expression.indexOf('.') < 0){
 				pointflag = false;
@@ -280,7 +286,7 @@ public class MainActivity extends Activity implements OnClickListener{
 					second = Double.parseDouble(s2);
 				}
 				
-				temp  = first * second;
+				temp  = ArithUtil.mul(first, second);
 				Log.i("Tag", "s1: " + s1);
 				Log.i("Tag", "s2: " + s2);
 				Log.i("Tag", "temp: " + temp);
@@ -345,7 +351,7 @@ public class MainActivity extends Activity implements OnClickListener{
 					error1 = true;
 					return -1;
 				}
-				temp  = first / second;
+				temp  = ArithUtil.div(first, second);
 				if(position1 == -1){
 					frontString = "";
 				}
@@ -416,7 +422,7 @@ public class MainActivity extends Activity implements OnClickListener{
 				else{
 					second = Double.parseDouble(s2);
 				}
-				temp  = first + second;
+				temp  = ArithUtil.add(first, second);
 				Log.i("Tag", "s1: " + s1);
 				Log.i("Tag", "s2: " + s2);
 				Log.i("Tag", "temp: " + temp);
@@ -474,7 +480,7 @@ public class MainActivity extends Activity implements OnClickListener{
 				else{
 					second = Double.parseDouble(s2);
 				}
-				temp  = first - second;
+				temp  = ArithUtil.sub(first, second);
 				if(position1 == -1){
 					frontString = "";
 				}
