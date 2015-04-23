@@ -147,7 +147,7 @@ public class MainActivity extends Activity implements OnClickListener{
 				break;
 			}
 			//输入加减乘除，如果上一个输入的是加减乘除符号，这次点击无效
-			if (last_input.equals("+") || last_input.equals("-") || last_input.equals("×") || last_input.equals("÷")) {
+			if (last_input.equals("+") || last_input.equals("-") || last_input.equals("x") || last_input.equals("÷")) {
 				
 			}
 			else {
@@ -223,7 +223,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		//检查表达式里是否有运算符，如果没有则不需要进行运算
 		int position1 = expression.indexOf("+");
 		int position2 = expression.indexOf("-");
-		int position3 = expression.indexOf("×");
+		int position3 = expression.indexOf("x");
 		int position4 = expression.indexOf("÷");
 		if(position1 < 0 && position2 < 0 && position3 < 0 && position4 < 0){
 			return;
@@ -241,6 +241,9 @@ public class MainActivity extends Activity implements OnClickListener{
 			}
 			BigDecimal bg = new BigDecimal(expression);
 			expression = bg.toPlainString();
+			if(expression.length() > 10 && expression.contains(".")){
+				expression = expression.substring(0,11);
+			}
 			et_input.setText(expression);
 			if(expression.indexOf('.') < 0){
 				pointflag = false;
@@ -257,7 +260,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		int position1 = 0;
 		int position2 = 0;
 		double temp = 0;
-		int multilocation = expression.indexOf("×");
+		int multilocation = expression.indexOf("x");
 		int dividelocation = expression.indexOf("÷");
 		String frontString = "";
 		String backString = "";
@@ -535,7 +538,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	{
 		int position1 = expression.indexOf("+",position);
 		int position2 = expression.indexOf("-",position);
-		int position3 = expression.indexOf("×",position);
+		int position3 = expression.indexOf("x",position);
 		int position4 = expression.indexOf("÷",position);
 		int small = getSmallNumber(position1, position2, position3, position4);
 		return small;
