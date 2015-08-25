@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
 	android:orientation="vertical"
-	android:background="#35B4EF"
+	android:background="#33a3dc"
     tools:context=".MainActivity" >
 
      <EditText
@@ -15,13 +15,15 @@
         android:layout_width="fill_parent"
         android:layout_height="140dp"
         android:background="@drawable/white_bg"
-        android:editable="false"
+        android:focusable="false"
         android:textSize="58sp"
         android:gravity="right|bottom"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="12dp"
+        android:paddingRight="4dp"
+        android:paddingLeft="4dp"
         android:text="0"
-        android:singleLine="false"
-        android:maxLines="2"
+        android:singleLine="true"
+        android:textColor="#464547"
 		>
     </EditText>
 	<LinearLayout  
@@ -30,6 +32,7 @@
 	    android:layout_marginTop="10dp"
 	    android:orientation="horizontal"
 	    android:gravity="center_horizontal"
+	    android:textColor="#4f5555"
 	    >
 	    <Button 
 	        android:layout_width="74dp"
@@ -38,6 +41,7 @@
 	        android:textSize="22sp"
 	        android:id="@+id/btn_clear"
 	        android:background="@drawable/white_selector"
+	        android:textColor="#4f5555"
 	        />
 	    <Button 
 	        android:layout_width="74dp"
@@ -47,6 +51,7 @@
 	        android:id="@+id/btn_del"
 	        android:layout_marginLeft="10dp"
 	        android:background="@drawable/white_selector"
+	        android:textColor="#4f5555"
 	        />
 	    <Button 
 	        android:layout_width="74dp"
@@ -56,6 +61,7 @@
 	        android:id="@+id/btn_divide"
 	        android:layout_marginLeft="10dp"
 	        android:background="@drawable/white_selector"
+	        android:textColor="#4f5555"
 	        />
    	    <Button 
 	        android:layout_width="74dp"
@@ -65,6 +71,7 @@
 	        android:id="@+id/btn_multiple"
 	        android:layout_marginLeft="10dp"
 	        android:background="@drawable/white_selector"
+	        android:textColor="#4f5555"
 	        />	    	    
 	</LinearLayout>
 	<LinearLayout 
@@ -81,6 +88,7 @@
 	        android:textSize="22sp"
 	        android:id="@+id/btn_7"
 	        android:background="@drawable/white_selector"
+	        android:textColor="#4f5555"
 	        />
 	    <Button 
 	        android:layout_width="74dp"
@@ -90,6 +98,7 @@
 	        android:id="@+id/btn_8"
 	        android:layout_marginLeft="10dp"
 	        android:background="@drawable/white_selector"
+	        android:textColor="#4f5555"
 	        />
 	    <Button 
 	        android:layout_width="74dp"
@@ -99,6 +108,7 @@
 	        android:id="@+id/btn_9"
 	        android:layout_marginLeft="10dp"
 	        android:background="@drawable/white_selector"
+	        android:textColor="#4f5555"
 	        />
    	    <Button 
 	        android:layout_width="74dp"
@@ -108,6 +118,7 @@
 	        android:id="@+id/btn_minus"
 	        android:layout_marginLeft="10dp"
 	        android:background="@drawable/white_selector"
+	        android:textColor="#4f5555"
 	        />	    	    
 	</LinearLayout>
 	<LinearLayout 
@@ -124,6 +135,7 @@
 	        android:textSize="22sp"
 	        android:id="@+id/btn_4"
 	        android:background="@drawable/white_selector"
+	        android:textColor="#4f5555"
 	        />
 	    <Button 
 	        android:layout_width="74dp"
@@ -133,6 +145,7 @@
 	        android:id="@+id/btn_5"
 	        android:layout_marginLeft="10dp"
 	        android:background="@drawable/white_selector"
+	        android:textColor="#4f5555"
 	        />
 	    <Button 
 	        android:layout_width="74dp"
@@ -142,6 +155,7 @@
 	        android:id="@+id/btn_6"
 	        android:layout_marginLeft="10dp"
 	        android:background="@drawable/white_selector"
+	        android:textColor="#4f5555"
 	        />
    	    <Button 
 	        android:layout_width="74dp"
@@ -151,6 +165,7 @@
 	        android:id="@+id/btn_add"
 	        android:layout_marginLeft="10dp"
 	        android:background="@drawable/white_selector"
+	        android:textColor="#4f5555"
 	        />	    	    
 	</LinearLayout>
 
@@ -180,6 +195,7 @@
 			        android:textSize="22sp"
 		    	    android:id="@+id/btn_1"
 		    	    android:background="@drawable/white_selector"
+		    	    android:textColor="#4f5555"
 			        />
 		        
       		   	<Button 
@@ -190,6 +206,7 @@
 		    	    android:id="@+id/btn_2"
 		    	    android:layout_marginLeft="10dp"
 		    	    android:background="@drawable/white_selector"
+		    	    android:textColor="#4f5555"
 			        />
       		   	
 		      	<Button 
@@ -200,6 +217,7 @@
 		    	    android:id="@+id/btn_3"
 		    	    android:layout_marginLeft="10dp"
 		    	    android:background="@drawable/white_selector"
+		    	    android:textColor="#4f5555"
 			        />
 		        
 		    </LinearLayout>
@@ -216,6 +234,7 @@
 			        android:textSize="22sp"
 		    	    android:id="@+id/btn_0"
 		    	    android:background="@drawable/white_selector"
+		    	    android:textColor="#4f5555"
 			        />
       		   <Button 
 			        android:layout_width="74dp"
@@ -225,6 +244,7 @@
 		    	    android:id="@+id/btn_point"
 		    	    android:layout_marginLeft="10dp"
 		    	    android:background="@drawable/white_selector"
+		    	    android:textColor="#4f5555"
 			        />
     	    </LinearLayout>
 	    </LinearLayout>
@@ -243,6 +263,7 @@
     	    android:id="@+id/btn_equal"
 	        android:layout_marginLeft="10dp"
 	        android:background="@drawable/orange_selector"
+	        android:textColor="#4f5555"
 	        />
 		</LinearLayout>
 	    

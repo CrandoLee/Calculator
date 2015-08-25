@@ -109,9 +109,6 @@ public class MainActivity extends Activity implements OnClickListener{
 		case R.id.btn_7:
 		case R.id.btn_8:
 		case R.id.btn_9:
-			if (expression.length() > 10) {
-				break;
-			}
 			
 			//如果算式第一个字符为0，则自动变为输入的数字
 			if (expression.length() == 1 && expression.substring(0,1).equals("0")) {
@@ -122,11 +119,9 @@ public class MainActivity extends Activity implements OnClickListener{
 			}
 			last_input = (String) ((Button) v).getText();
 			et_input.setText(expression);
+			et_input.setSelection(expression.length());
 			break;
 		case R.id.btn_0:
-			if (expression.length() > 10) {
-				break;
-			}
 			
 			//禁止在开始的时候输入0003这种类型的数字
 			if (expression.length() == 1 && expression.substring(0,1).equals("0")) {
@@ -138,14 +133,12 @@ public class MainActivity extends Activity implements OnClickListener{
 			//记录上一次输入的字符
 			last_input = (String) ((Button) v).getText();
 			et_input.setText(expression);
+			et_input.setSelection(expression.length());
 			break;
 		case R.id.btn_add:
 		case R.id.btn_minus:
 		case R.id.btn_multiple:
 		case R.id.btn_divide:
-			if (expression.length() > 10) {
-				break;
-			}
 			//输入加减乘除，如果上一个输入的是加减乘除符号，这次点击无效
 			if (last_input.equals("+") || last_input.equals("-") || last_input.equals("x") || last_input.equals("÷")) {
 				
@@ -154,6 +147,7 @@ public class MainActivity extends Activity implements OnClickListener{
 				expression = expression + ((Button) v).getText();
 				last_input = (String) ((Button) v).getText();
 				et_input.setText(expression);
+				et_input.setSelection(expression.length());
 			}
 			pointflag = false;
 			break;
@@ -161,6 +155,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			//退格键，如果式子长度不为零，删除一个字符,否则不执行删除操作
 			if (error1 == true) {
 				et_input.setText(expression_backup);
+				et_input.setSelection(expression.length());
 				expression = expression_backup;
 				error1 = false;
 				break;
@@ -174,10 +169,12 @@ public class MainActivity extends Activity implements OnClickListener{
 				}
 				expression = expression.substring(0,expression.length() - 1);
 				et_input.setText(expression);
+				et_input.setSelection(expression.length());
 			}
 			else{
 				expression = "0";
 				et_input.setText(expression);
+				et_input.setSelection(expression.length());
 			}
 			last_input = (String) ((Button) v).getText();
 			break;
@@ -194,13 +191,11 @@ public class MainActivity extends Activity implements OnClickListener{
 			last_input = (String) ((Button) v).getText();
 			break;
 		case R.id.btn_point:
-			if (expression.length() > 10) {
-				break;
-			}
 			//输入小数点，如果一个数里面含有小数点，则不允许再输入小数点
 			if(pointflag == false) {
 				expression = expression + ((Button) v).getText();
 				et_input.setText(expression);
+				et_input.setSelection(expression.length());
 				//表明已经输入小数点
 				pointflag = true;
 			}
@@ -214,7 +209,6 @@ public class MainActivity extends Activity implements OnClickListener{
 			break;
 		}
 	}
-
 	
 	public void getResult(){
 		//计算式子结果
@@ -245,6 +239,7 @@ public class MainActivity extends Activity implements OnClickListener{
 				expression = expression.substring(0,11);
 			}
 			et_input.setText(expression);
+			et_input.setSelection(expression.length());
 			if(expression.indexOf('.') < 0){
 				pointflag = false;
 			}
